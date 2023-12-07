@@ -1,0 +1,26 @@
+0-2(0-2)      3-6(2-5)    7-8(7-8)    9-11(1-3)
+                     and
+0-5(1-6)      6-7(10-11)  8-9(8-9)    10-11(4-5)
+                      =
+0-1(1-2)  2-5(2-5)  6-7(2-3) 8-8(8-8)  9-9(1-1)  10-11(3-4)
+
+so we can combine two maps into one map...
+... and then split the input onto this map...
+... only actually map the lowest of each...
+... and get the min value
+
+the 'addition' process might get confusing, but I think this is a good way to do it overall
+
+this example:
+```
+seeds: 4 3
+
+seed-to-soil map:
+1 0 6
+10 6 2
+4 10 2
+
+soil-to-fertilizer map:
+2 3 4
+1 9 3
+```
