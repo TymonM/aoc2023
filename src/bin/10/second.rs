@@ -21,7 +21,7 @@ pub fn run(input: &str) {
     }
 
     // debugging + cool art
-    Pipe::print_pipe_map(&pipe_map, &in_loop);
+    // Pipe::print_pipe_map(&pipe_map, &in_loop);
 
     let mut enclosed = 0;
     let mut y = 0;
