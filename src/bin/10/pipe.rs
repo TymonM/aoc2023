@@ -1,10 +1,10 @@
 use crate::pipe::Direction::*;
 
 const NEIGHBOURS: [((i32, i32), Direction); 4] = [
-    ((0, 1), Direction::Up),
-    ((-1, 0), Direction::Right),
-    ((0, -1), Direction::Down),
-    ((1, 0), Direction::Left),
+    ((0, 1), Up),
+    ((-1, 0), Right),
+    ((0, -1), Down),
+    ((1, 0), Left),
 ];
 
 #[derive(Eq, PartialEq, Copy, Clone)]
@@ -75,7 +75,7 @@ impl Pipe {
         pipe_map: &mut Vec<Vec<Option<Pipe>>>,
         starting_coords: (usize, usize),
     ) -> (Direction, Direction) {
-        let mut directions: [Direction; 2] = [Direction::Up, Direction::Up];
+        let mut directions: [Direction; 2] = [Up, Up];
         let mut i = 0;
         for neighbour in NEIGHBOURS {
             let x = starting_coords.0 as i32 + neighbour.0 .0;
