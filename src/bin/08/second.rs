@@ -14,16 +14,16 @@ pub fn run(input: &str) {
         let left = String::from(&def[7..10]);
         let right = String::from(&def[12..15]);
 
-        if label.chars().last().unwrap() == 'A' {
+        if label.ends_with('A') {
             starting_nodes.push(label);
         }
 
-        node_map.insert(label, Node{left, right});
+        node_map.insert(label, Node { left, right });
     }
 
     let mut z_locations = vec![];
     for node in starting_nodes {
-        let mut traversed : Vec<(&str, usize)> = vec![];
+        let mut traversed: Vec<(&str, usize)> = vec![];
         let mut current_node = node;
         let mut count = 0;
         'navigate: loop {
@@ -38,7 +38,7 @@ pub fn run(input: &str) {
                 } else if instruction == 'L' {
                     current_node = &node_map[current_node].left;
                 }
-                if current_node.chars().last().unwrap() == 'Z' {
+                if current_node.ends_with('Z') {
                     z_locations.push(count);
                 }
             }

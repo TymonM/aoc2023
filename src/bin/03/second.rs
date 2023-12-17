@@ -17,15 +17,14 @@ pub fn run(input: Vec<Vec<char>>) {
                 part_number.push(line[x]);
                 x += 1;
             }
-            match adjacent_to_star(x - part_number.len(), y, part_number.len(), &input) {
-                Some(star_coords) => {
-                    if map.contains_key(&star_coords) {
-                        sum += part_number.parse::<i32>().unwrap() * map[&star_coords];
-                    } else {
-                        map.insert(star_coords, part_number.parse::<i32>().unwrap());
-                    }
-                },
-                None => (),
+            if let Some(star_coords) =
+                adjacent_to_star(x - part_number.len(), y, part_number.len(), &input)
+            {
+                if let std::collections::hash_map::Entry::Vacant(e) = map.entry(star_coords) {
+                    e.insert(part_number.parse::<i32>().unwrap());
+                } else {
+                    sum += part_number.parse::<i32>().unwrap() * map[&star_coords];
+                }
             }
         }
 
@@ -35,10 +34,15 @@ pub fn run(input: Vec<Vec<char>>) {
     println!("{}", sum);
 }
 
-fn adjacent_to_star(x: usize, y: usize, len: usize, mat: &Vec<Vec<char>>) -> Option<(usize,usize)> {
-    let mut j = if y > 0 {y - 1} else {0};
+fn adjacent_to_star(
+    x: usize,
+    y: usize,
+    len: usize,
+    mat: &Vec<Vec<char>>,
+) -> Option<(usize, usize)> {
+    let mut j = if y > 0 { y - 1 } else { 0 };
     while j < mat.len() && j < y + 2 {
-        let mut i = if x > 0 {x - 1} else {0};
+        let mut i = if x > 0 { x - 1 } else { 0 };
         while i < mat[j].len() && i < x + len + 1 {
             let c = mat[j][i];
             if c == '*' {

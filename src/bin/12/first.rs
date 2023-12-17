@@ -34,10 +34,7 @@ pub fn run(input: &str) {
     println!("{}", sum);
 }
 
-fn ways_to_match_records_efficient(
-    mut status_map: &mut Vec<Status>,
-    records: &Vec<usize>,
-) -> usize {
+fn ways_to_match_records_efficient(status_map: &mut Vec<Status>, records: &Vec<usize>) -> usize {
     let mut i = 0;
     let mut block_index = 0;
     let mut block_size = 0;
@@ -65,9 +62,9 @@ fn ways_to_match_records_efficient(
     if i < status_map.len() {
         let original_status = status_map[i];
         status_map[i] = Status::Working;
-        let working_ways = ways_to_match_records_efficient(&mut status_map, &records);
+        let working_ways = ways_to_match_records_efficient(status_map, records);
         status_map[i] = Status::Broken;
-        let broken_ways = ways_to_match_records_efficient(&mut status_map, &records);
+        let broken_ways = ways_to_match_records_efficient(status_map, records);
         status_map[i] = original_status;
         return working_ways + broken_ways;
     } else if block_index < records.len() - 1
@@ -80,15 +77,14 @@ fn ways_to_match_records_efficient(
 }
 
 // Original, less efficient way
+#[allow(dead_code)]
 fn ways_to_match_records(mut status_map: Vec<Status>, records: &Vec<usize>) -> usize {
-    let i = status_map
-        .iter()
-        .position(|x| if let Status::Unknown = x { true } else { false });
+    let i = status_map.iter().position(|x| matches!(x, Status::Unknown));
     if let Some(i) = i {
         status_map[i] = Status::Working;
-        let working_ways = ways_to_match_records(status_map.clone(), &records);
+        let working_ways = ways_to_match_records(status_map.clone(), records);
         status_map[i] = Status::Broken;
-        let broken_ways = ways_to_match_records(status_map.clone(), &records);
+        let broken_ways = ways_to_match_records(status_map.clone(), records);
         return working_ways + broken_ways;
     }
 

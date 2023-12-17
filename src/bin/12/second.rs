@@ -47,10 +47,11 @@ fn ways_to_match_records(
     records: &[usize],
     cached: &mut HashMap<(usize, usize), usize>,
 ) -> usize {
-    if cached.contains_key(&(status_map.len(), records.len())) {
-        return cached[&(status_map.len(), records.len())];
+    if let std::collections::hash_map::Entry::Occupied(e) =
+        cached.entry((status_map.len(), records.len()))
+    {
+        return *e.get();
     }
-
     let max = if let Some(first_broken) = find_first_broken(status_map) {
         if records.is_empty() || records[0] > status_map.len() {
             return 0;
@@ -95,7 +96,5 @@ fn ways_to_match_records(
 }
 
 fn find_first_broken(status_map: &[Status]) -> Option<usize> {
-    status_map
-        .iter()
-        .position(|x| if let Status::Broken = x { true } else { false })
+    status_map.iter().position(|x| matches!(x, Status::Broken))
 }

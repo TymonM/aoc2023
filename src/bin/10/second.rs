@@ -16,8 +16,10 @@ pub fn run(input: &str) {
         if current_coords.0 == starting_coords.0 && current_coords.1 == starting_coords.1 {
             break;
         }
-        current_direction = pipe_map[current_coords.1][current_coords.0].clone().unwrap()
-            .other(current_direction.opposite()).unwrap();
+        current_direction = pipe_map[current_coords.1][current_coords.0]
+            .unwrap()
+            .other(current_direction.opposite())
+            .unwrap();
     }
 
     // debugging + cool art
@@ -28,11 +30,9 @@ pub fn run(input: &str) {
     while y < pipe_map.len() {
         let mut x = 0;
         while x < pipe_map[y].len() {
-            if !in_loop[y][x] {
-                if check_enclosed(x, y, &pipe_map, &in_loop) {
-                    // println!("{}, {} is enclosed", x, y);
-                    enclosed += 1;
-                }
+            if !in_loop[y][x] && check_enclosed(x, y, &pipe_map, &in_loop) {
+                // println!("{}, {} is enclosed", x, y);
+                enclosed += 1;
             }
             x += 1;
         }
@@ -42,16 +42,21 @@ pub fn run(input: &str) {
     println!("{}", enclosed);
 }
 
-fn check_enclosed(x: usize, y: usize, pipe_map: &Vec<Vec<Option<Pipe>>>, in_loop: &Vec<Vec<bool>>) -> bool {
+fn check_enclosed(
+    x: usize,
+    y: usize,
+    pipe_map: &[Vec<Option<Pipe>>],
+    in_loop: &[Vec<bool>],
+) -> bool {
     let mut y2 = 0;
     let mut is_enclosed = false;
     while y2 < y {
-        if in_loop[y2][x] &&
-            (pipe_map[y2][x].unwrap().0 != Direction::Up || pipe_map[y2][x].unwrap().1 != Direction::Down) {
-            match pipe_map[y2][x].unwrap().other(Direction::Right) {
-                Some(_) => is_enclosed = ! is_enclosed,
-                None => (),
-            };
+        if in_loop[y2][x]
+            && (pipe_map[y2][x].unwrap().0 != Direction::Up
+                || pipe_map[y2][x].unwrap().1 != Direction::Down)
+            && pipe_map[y2][x].unwrap().other(Direction::Right).is_some()
+        {
+            is_enclosed = !is_enclosed
         }
         y2 += 1;
     }

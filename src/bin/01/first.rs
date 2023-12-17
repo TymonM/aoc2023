@@ -7,12 +7,12 @@ pub fn run() {
     for line in input.lines() {
         let mut calibration_value = String::from("");
         let mut i = 0;
-        while !line.chars().nth(i).unwrap().is_digit(10) {
+        while !line.chars().nth(i).unwrap().is_ascii_digit() {
             i += 1;
         }
         calibration_value.push(line.chars().nth(i).unwrap());
         let mut i = line.len() - 1;
-        while !line.chars().nth(i).unwrap().is_digit(10) {
+        while !line.chars().nth(i).unwrap().is_ascii_digit() {
             i -= 1;
         }
         calibration_value.push(line.chars().nth(i).unwrap());

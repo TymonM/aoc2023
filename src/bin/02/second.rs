@@ -4,7 +4,7 @@ enum Colour {
     Blue(u32),
 }
 
-pub fn run(input : String) -> () {
+pub fn run(input: String) {
     let mut sum = 0;
     for line in input.lines() {
         let mut i = 5; // skip the first 5 chars: "Game "
@@ -21,9 +21,21 @@ pub fn run(input : String) -> () {
             i = new_index + 2; // skip delimiter
 
             match colour {
-                Colour::Red(count) => { if count > max_r { max_r = count } },
-                Colour::Green(count) => { if count > max_g { max_g = count } },
-                Colour::Blue(count) => { if count > max_b { max_b = count } },
+                Colour::Red(count) => {
+                    if count > max_r {
+                        max_r = count
+                    }
+                }
+                Colour::Green(count) => {
+                    if count > max_g {
+                        max_g = count
+                    }
+                }
+                Colour::Blue(count) => {
+                    if count > max_b {
+                        max_b = count
+                    }
+                }
             }
         }
         sum += max_r * max_g * max_b;
@@ -42,9 +54,9 @@ fn read_num_colour(str: String, mut i: usize) -> (Colour, usize) {
     i += 1; // skip space
 
     match str.chars().nth(i).unwrap() {
-        'r' => (Colour::Red(count), i+3),
-        'g' => (Colour::Green(count), i+5),
-        'b' => (Colour::Blue(count), i+4),
-        _ => panic!("ijfLHSDnfuHS<fjalkSJ -- What colour is that!??!?!")
+        'r' => (Colour::Red(count), i + 3),
+        'g' => (Colour::Green(count), i + 5),
+        'b' => (Colour::Blue(count), i + 4),
+        _ => panic!("ijfLHSDnfuHS<fjalkSJ -- What colour is that!??!?!"),
     }
 }

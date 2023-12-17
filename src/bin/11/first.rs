@@ -3,7 +3,7 @@ use std::cmp::{max, min};
 pub fn run(input: &str) {
     let mut star_locations = vec![];
     let mut is_empty_row = vec![true; input.len()];
-    let mut is_empty_col = vec![true; input.lines().nth(0).unwrap().len()];
+    let mut is_empty_col = vec![true; input.lines().next().unwrap().len()];
     for (y, line) in input.lines().enumerate() {
         for (x, c) in line.chars().enumerate() {
             match c {
@@ -13,7 +13,7 @@ pub fn run(input: &str) {
                     is_empty_col[x] = false;
                 }
                 '.' => (),
-                _ => panic!("Unknown char in input!")
+                _ => panic!("Unknown char in input!"),
             }
         }
     }
@@ -23,7 +23,12 @@ pub fn run(input: &str) {
     while i < star_locations.len() {
         let mut j = i + 1;
         while j < star_locations.len() {
-            sum += calculate_distance(star_locations[i], star_locations[j], &is_empty_row, &is_empty_col);
+            sum += calculate_distance(
+                star_locations[i],
+                star_locations[j],
+                &is_empty_row,
+                &is_empty_col,
+            );
             j += 1;
         }
         i += 1;
@@ -32,7 +37,12 @@ pub fn run(input: &str) {
     println!("{}", sum);
 }
 
-fn calculate_distance(a: (usize, usize), b: (usize, usize), is_empty_row: &Vec<bool>, is_empty_col: &Vec<bool>) -> usize {
+fn calculate_distance(
+    a: (usize, usize),
+    b: (usize, usize),
+    is_empty_row: &[bool],
+    is_empty_col: &[bool],
+) -> usize {
     let left_col = min(a.0, b.0);
     let right_col = max(a.0, b.0);
     let top_row = min(a.1, b.1);

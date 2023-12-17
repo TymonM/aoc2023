@@ -1,8 +1,11 @@
 pub fn run(input: &str) {
-    let histories = input.lines()
-        .map(|line| line.split_whitespace()
-            .map(|val| val.parse::<i64>().expect("not an f64!"))
-            .collect::<Vec<i64>>())
+    let histories = input
+        .lines()
+        .map(|line| {
+            line.split_whitespace()
+                .map(|val| val.parse::<i64>().expect("not an f64!"))
+                .collect::<Vec<i64>>()
+        })
         .collect::<Vec<Vec<i64>>>();
 
     let mut sum = 0;
@@ -39,8 +42,8 @@ fn climb_up(table: Vec<Vec<i64>>) -> Vec<Vec<i64>> {
     let mut i = table.len();
     let mut previous = 0;
     while i > 0 {
-        previous = previous + result[i-1].last().unwrap();
-        result[i-1].push(previous);
+        previous += result[i - 1].last().unwrap();
+        result[i - 1].push(previous);
         i -= 1;
     }
 

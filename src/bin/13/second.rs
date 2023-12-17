@@ -20,7 +20,7 @@ pub fn run(input: &str) {
         let smudged_patterns = all_smudges(&pattern);
         let initial_mirror = find_mirror(&pattern, 0).unwrap();
         for smudged in &smudged_patterns {
-            if let Some(mirror) = find_mirror(smudged, initial_mirror){
+            if let Some(mirror) = find_mirror(smudged, initial_mirror) {
                 sum += mirror;
                 break;
             }
@@ -32,14 +32,14 @@ pub fn run(input: &str) {
 fn find_mirror(pattern: &Vec<Vec<char>>, forbidden: usize) -> Option<usize> {
     let mut x = 1;
     while x < pattern[0].len() {
-        if x != forbidden && does_mirror_vertical(&pattern, x) {
+        if x != forbidden && does_mirror_vertical(pattern, x) {
             return Some(x);
         }
         x += 1;
     }
     let mut y = 1;
     while y < pattern.len() {
-        if 100*y != forbidden && does_mirror_horizontal(&pattern, y) {
+        if 100 * y != forbidden && does_mirror_horizontal(pattern, y) {
             return Some(100 * y);
         }
         y += 1;
@@ -48,7 +48,7 @@ fn find_mirror(pattern: &Vec<Vec<char>>, forbidden: usize) -> Option<usize> {
     None
 }
 
-fn does_mirror_vertical(pattern: &Vec<Vec<char>>, x: usize) -> bool {
+fn does_mirror_vertical(pattern: &[Vec<char>], x: usize) -> bool {
     let mut cols = vec![];
     let mut i = 0;
     while i < pattern[0].len() {
@@ -64,7 +64,7 @@ fn does_mirror_vertical(pattern: &Vec<Vec<char>>, x: usize) -> bool {
 
     let mut i = 0;
     while i <= x {
-        if 2*x-i-1 < pattern[0].len() && cols[i] != cols[2 * x - i - 1] {
+        if 2 * x - i - 1 < pattern[0].len() && cols[i] != cols[2 * x - i - 1] {
             return false;
         }
         i += 1;
@@ -76,7 +76,7 @@ fn does_mirror_vertical(pattern: &Vec<Vec<char>>, x: usize) -> bool {
 fn does_mirror_horizontal(pattern: &Vec<Vec<char>>, y: usize) -> bool {
     let mut i = 0;
     while i <= y {
-        if 2*y-i-1 < pattern.len() && pattern[i] != pattern[2 * y - i - 1] {
+        if 2 * y - i - 1 < pattern.len() && pattern[i] != pattern[2 * y - i - 1] {
             return false;
         }
         i += 1;
@@ -85,9 +85,9 @@ fn does_mirror_horizontal(pattern: &Vec<Vec<char>>, y: usize) -> bool {
     true
 }
 
-fn all_smudges(pattern: &Vec<Vec<char>>) -> Vec<Vec<Vec<char>>> {
+fn all_smudges(pattern: &[Vec<char>]) -> Vec<Vec<Vec<char>>> {
     let mut smudged_patterns = vec![];
-    let mut pattern = pattern.clone();
+    let mut pattern = pattern.to_owned();
     let mut y = 0;
     while y < pattern.len() {
         let mut x = 0;
@@ -102,10 +102,10 @@ fn all_smudges(pattern: &Vec<Vec<char>>) -> Vec<Vec<Vec<char>>> {
     smudged_patterns
 }
 
-fn smudge(pattern: &mut Vec<Vec<char>>, x: usize, y: usize) {
+fn smudge(pattern: &mut [Vec<char>], x: usize, y: usize) {
     pattern[y][x] = match pattern[y][x] {
         '.' => '#',
         '#' => '.',
-        _ => panic!("unknown char in input")
+        _ => panic!("unknown char in input"),
     }
 }

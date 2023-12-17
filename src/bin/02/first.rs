@@ -1,4 +1,4 @@
-pub fn run(input : String) -> () {
+pub fn run(input: String) {
     let mut sum = 0;
     let mut game_number = 0;
     'line: for line in input.lines() {
@@ -10,7 +10,9 @@ pub fn run(input : String) -> () {
         i += 2; // skip the ": "
         while i < line.len() {
             let (legal, new_index) = read_num_colour(line.to_string(), i);
-            if !legal { continue 'line; }
+            if !legal {
+                continue 'line;
+            }
             i = new_index + 2; // skip delimiter
         }
         sum += game_number;
@@ -33,9 +35,9 @@ fn read_num_colour(str: String, mut i: usize) -> (bool, usize) {
     i += 1; // skip space
 
     match str.chars().nth(i).unwrap() {
-        'r' => (count <= red_threshold, i+3),
-        'g' => (count <= green_threshold, i+5),
-        'b' => (count <= blue_threshold, i+4),
-        _ => panic!("ijfLHSDnfuHS<fjalkSJ -- What colour is that!??!?!")
+        'r' => (count <= red_threshold, i + 3),
+        'g' => (count <= green_threshold, i + 5),
+        'b' => (count <= blue_threshold, i + 4),
+        _ => panic!("ijfLHSDnfuHS<fjalkSJ -- What colour is that!??!?!"),
     }
 }

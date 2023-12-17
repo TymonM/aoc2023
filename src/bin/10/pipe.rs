@@ -7,13 +7,12 @@ const NEIGHBOURS: [((i32, i32), Direction); 4] = [
     ((1, 0), Direction::Left),
 ];
 
-#[derive(Eq, PartialEq)]
-#[derive(Copy, Clone)]
+#[derive(Eq, PartialEq, Copy, Clone)]
 pub enum Direction {
     Up,
     Left,
     Down,
-    Right
+    Right,
 }
 
 #[derive(Copy, Clone)]
@@ -56,7 +55,6 @@ impl Direction {
 }
 
 impl Pipe {
-
     pub(crate) fn read_pipe_map(input: &str) -> (Vec<Vec<Option<Pipe>>>, (usize, usize)) {
         let mut pipe_map = vec![];
         let mut starting_coords = (0, 0);
@@ -73,26 +71,27 @@ impl Pipe {
         (pipe_map, starting_coords)
     }
 
-    pub(crate) fn extrapolate_start(pipe_map: &mut Vec<Vec<Option<Pipe>>>, starting_coords: (usize, usize)) -> (Direction, Direction) {
+    pub(crate) fn extrapolate_start(
+        pipe_map: &mut Vec<Vec<Option<Pipe>>>,
+        starting_coords: (usize, usize),
+    ) -> (Direction, Direction) {
         let mut directions: [Direction; 2] = [Direction::Up, Direction::Up];
         let mut i = 0;
         for neighbour in NEIGHBOURS {
-            let x = starting_coords.0 as i32 + neighbour.0.0;
-            let y = starting_coords.1 as i32 + neighbour.0.1;
+            let x = starting_coords.0 as i32 + neighbour.0 .0;
+            let y = starting_coords.1 as i32 + neighbour.0 .1;
             if x < 0 || y < 0 || x >= pipe_map.len() as i32 || y >= pipe_map.len() as i32 {
                 continue;
             }
             let x = x as usize;
             let y = y as usize;
             match &pipe_map[y][x] {
-                Some(pipe) => {
-                    match pipe.other(neighbour.1) {
-                        Some(_) => {
-                            directions[i] = neighbour.1.opposite();
-                            i += 1;
-                        },
-                        None => continue
+                Some(pipe) => match pipe.other(neighbour.1) {
+                    Some(_) => {
+                        directions[i] = neighbour.1.opposite();
+                        i += 1;
                     }
+                    None => continue,
                 },
                 None => continue,
             };
@@ -113,9 +112,8 @@ impl Pipe {
 }
 
 // Printing is for debug only
+#[allow(dead_code)]
 impl Pipe {
-
-
     pub fn print(&self) -> char {
         match self {
             Pipe(Up, Down) => '║',
@@ -124,11 +122,11 @@ impl Pipe {
             Pipe(Up, Left) => '╝',
             Pipe(Down, Left) => '╗',
             Pipe(Down, Right) => '╔',
-            _ => '?'
+            _ => '?',
         }
     }
 
-    pub fn print_pipe_map(pipe_map: &Vec<Vec<Option<Pipe>>>, in_loop: &Vec<Vec<bool>>) {
+    pub fn print_pipe_map(pipe_map: &[Vec<Option<Pipe>>], in_loop: &[Vec<bool>]) {
         let mut y = 0;
         while y < pipe_map.len() {
             let mut x = 0;
@@ -140,7 +138,7 @@ impl Pipe {
                 }
                 x += 1;
             }
-            print!("\n");
+            println!();
             y += 1;
         }
     }

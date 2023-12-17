@@ -1,12 +1,11 @@
-use std::fs::{self, File, read_to_string};
 use crate::map::Map;
+use std::fs::{self, read_to_string, File};
 
 const MAPSUM_PATH: &str = "src/bin/05/mapsum.txt";
 
 pub fn run(seeds_line: &str, maps: &Vec<Map>) {
-    match File::open(MAPSUM_PATH) {
-        Err(_) => {generate_map_sum(seeds_line, maps);},
-        _ => {}
+    if File::open(MAPSUM_PATH).is_err() {
+        generate_map_sum(seeds_line, maps);
     }
     let map_sum = read_to_string(MAPSUM_PATH).unwrap();
 
@@ -43,7 +42,8 @@ fn generate_map_sum(seeds_line: &str, maps: &Vec<Map>) {
 }
 
 fn extract_seed_ranges(seeds_input: &str) -> Map {
-    let splits = seeds_input.split(' ')
+    let splits = seeds_input
+        .split(' ')
         .map(|x| x.parse().unwrap())
         .collect::<Vec<i64>>();
 
