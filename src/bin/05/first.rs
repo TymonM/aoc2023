@@ -5,7 +5,7 @@ pub fn run(seeds_line: &str, maps: &[Map]) {
     let mut min = i64::MAX;
     for seed in seeds {
         let mut previous = seed;
-        for map in maps.iter() {
+        for map in maps {
             previous = map.map(previous);
         }
         if previous < min {

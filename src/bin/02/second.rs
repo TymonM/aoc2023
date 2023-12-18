@@ -23,17 +23,17 @@ pub fn run(input: String) {
             match colour {
                 Colour::Red(count) => {
                     if count > max_r {
-                        max_r = count
+                        max_r = count;
                     }
                 }
                 Colour::Green(count) => {
                     if count > max_g {
-                        max_g = count
+                        max_g = count;
                     }
                 }
                 Colour::Blue(count) => {
                     if count > max_b {
-                        max_b = count
+                        max_b = count;
                     }
                 }
             }

@@ -9,7 +9,7 @@ pub fn run(input: &str) {
 
     let mut node_map = HashMap::new();
     let mut starting_nodes = vec![];
-    for def in node_defs.iter() {
+    for def in node_defs {
         let label = &def[..3];
         let left = String::from(&def[7..10]);
         let right = String::from(&def[12..15]);

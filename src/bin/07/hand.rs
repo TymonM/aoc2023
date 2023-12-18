@@ -92,7 +92,7 @@ impl Card {
                     .to_digit(10)
                     .unwrap_or_else(|| panic!("Unknown symbol `{}`", num))
                     as usize
-                    - 1
+                    - 1;
             }
         }
     }

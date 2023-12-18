@@ -8,12 +8,12 @@ pub fn run(input: &str) {
     let node_defs = lines.skip(1).collect::<Vec<&str>>();
 
     let mut node_map = HashMap::new();
-    for def in node_defs.iter() {
+    for def in node_defs {
         let label = &def[..3];
         let left = String::from(&def[7..10]);
         let right = String::from(&def[12..15]);
 
-        node_map.insert(label, Node{left, right});
+        node_map.insert(label, Node { left, right });
     }
 
     let mut current_node = "AAA";

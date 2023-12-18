@@ -56,7 +56,7 @@ fn check_enclosed(
                 || pipe_map[y2][x].unwrap().1 != Direction::Down)
             && pipe_map[y2][x].unwrap().other(Direction::Right).is_some()
         {
-            is_enclosed = !is_enclosed
+            is_enclosed = !is_enclosed;
         }
         y2 += 1;
     }

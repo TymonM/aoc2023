@@ -18,10 +18,10 @@ pub fn run(input: &str) {
     println!("{}", energised_tiles);
 }
 
-pub(crate) fn calculate_energised_tiles(tiles: &Vec<Vec<char>>, beams: &mut Vec<Beam>) -> usize {
+pub(crate) fn calculate_energised_tiles(tiles: &[Vec<char>], beams: &mut Vec<Beam>) -> usize {
     let mut seen_beams = HashSet::new();
     while !beams.is_empty() {
-        *beams = step_beams(&beams, &tiles, &mut seen_beams);
+        *beams = step_beams(beams, tiles, &mut seen_beams);
     }
 
     let mut energised_tiles = HashSet::new();
@@ -39,7 +39,7 @@ fn step_beams(beams: &[Beam], tiles: &[Vec<char>], seen_beams: &mut HashSet<Beam
         if seen_beams.contains(beam) {
             continue;
         } else {
-            seen_beams.insert(beam.clone());
+            seen_beams.insert(*beam);
         }
         let tile = tiles[beam.y][beam.x];
         match beam.direction {
@@ -184,7 +184,7 @@ fn step_beams(beams: &[Beam], tiles: &[Vec<char>], seen_beams: &mut HashSet<Beam
                 }
             }
             _ => {
-                if let Some(next_beam) = walk_beam(beam.clone(), tiles[0].len(), tiles.len()) {
+                if let Some(next_beam) = walk_beam(*beam, tiles[0].len(), tiles.len()) {
                     new_beams.push(next_beam);
                 }
             }

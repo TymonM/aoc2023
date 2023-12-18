@@ -9,8 +9,8 @@ struct Lens {
 pub fn run(input: &str) {
     let mut boxes = arr![vec![]; 256];
     for instruction in input.split(',') {
-        if instruction.ends_with('-') {
-            remove(&instruction[..instruction.len() - 1], &mut boxes);
+        if let Some(label) = instruction.strip_suffix('-') {
+            remove(label, &mut boxes);
         } else {
             let splits = instruction.split('=').collect::<Vec<&str>>();
             insert(splits[0], splits[1].parse().unwrap(), &mut boxes);

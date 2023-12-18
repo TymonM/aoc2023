@@ -7,5 +7,5 @@ fn main() {
     let input = read_to_string("src/bin/06/input.txt").expect("input.txt? :raise-eyebrow:");
 
     first::run(&input);
-    second::run(&input)
+    second::run(&input);
 }
