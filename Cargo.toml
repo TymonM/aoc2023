@@ -9,4 +9,5 @@ default-run = "aoc2023"
 [dependencies]
 arr_macro = "0.2.1"
 glob = "0.3.1"
+itertools = "0.12.0"
 num = "0.4.1"
