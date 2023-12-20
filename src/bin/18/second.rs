@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 pub fn run(input: &str) {
     let mut current_height = 0;
     let mut area = 0;
