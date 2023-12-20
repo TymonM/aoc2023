@@ -32,7 +32,7 @@ impl Map {
     }
 
     pub fn map(&self, val: i64) -> i64 {
-        for range in self.ranges {
+        for range in &self.ranges {
             if val >= range.min && val <= range.max {
                 return val + range.diff;
             }
