@@ -1,8 +1,10 @@
+use crate::pulse::{Broadcaster, Conjunction, FlipFlop, Module, Pulse};
 use std::collections::{HashMap, VecDeque};
 
 pub fn run(input: &str) {
     let mut modules: HashMap<String, Box<dyn Module>> = HashMap::new();
-    let mut conjunctions: HashMap<&str, (Vec<String>, Vec<String>)> = HashMap::new();
+    let mut module_inputs: HashMap<String, Vec<String>> = HashMap::new();
+    let mut conjunctions: HashMap<&str, Vec<String>> = HashMap::new();
     for declaration in input.lines() {
         let name = &declaration.split_whitespace().next().unwrap()[1..];
         let outputs = declaration
@@ -10,17 +12,18 @@ pub fn run(input: &str) {
             .last()
             .unwrap()
             .split(", ")
-            .map(|s| String::from(s))
+            .map(String::from)
             .collect::<Vec<String>>();
         match declaration.chars().next().unwrap() {
             '%' => {
                 for output in &outputs {
-                    if conjunctions.contains_key(output.as_str()) {
-                        conjunctions
-                            .get_mut(output.as_str())
+                    if module_inputs.contains_key(output) {
+                        module_inputs
+                            .get_mut(output)
                             .unwrap()
-                            .1
                             .push(String::from(name));
+                    } else {
+                        module_inputs.insert(output.to_string(), vec![String::from(name)]);
                     }
                 }
                 modules.insert(
@@ -29,16 +32,17 @@ pub fn run(input: &str) {
                 );
             }
             '&' => {
-                conjunctions.insert(name, (outputs, vec![]));
+                conjunctions.insert(name, outputs);
             }
             'b' => {
                 for output in &outputs {
-                    if conjunctions.contains_key(output.as_str()) {
-                        conjunctions
-                            .get_mut(output.as_str())
+                    if module_inputs.contains_key(output) {
+                        module_inputs
+                            .get_mut(output)
                             .unwrap()
-                            .1
                             .push(String::from("broadcaster"));
+                    } else {
+                        module_inputs.insert(output.to_string(), vec![String::from("broadcaster")]);
                     }
                 }
                 modules.insert(
@@ -49,125 +53,38 @@ pub fn run(input: &str) {
             c => panic!("unexpected char in input `{}`", c),
         };
     }
-    for (name, (outputs, inputs)) in conjunctions {
+    for (name, outputs) in conjunctions {
         modules.insert(
             String::from(name),
-            Box::new(Conjunction::with_details(name, outputs, inputs)),
+            Box::new(Conjunction::with_details(
+                name,
+                outputs,
+                module_inputs.get(name).unwrap_or(&vec![]).clone(),
+            )),
         );
     }
 
-    let mut pulses = VecDeque::from([Pulse {
-        is_high: false,
-        from: String::from("button"),
-        to: String::from("broadcaster"),
-    }]);
-    let mut count = 0;
-    while let Some(current_pulse) = pulses.pop_front() {
-        count += 1;
-        for output in modules
-            .get_mut(&current_pulse.to)
-            .unwrap()
-            .process_pulse(current_pulse)
-        {
-            pulses.push_back(output);
+    let mut high_count = 0;
+    let mut low_count = 0;
+    for _button_press in 0..1000 {
+        let mut pulses = VecDeque::from([Pulse {
+            is_high: false,
+            from: String::from("button"),
+            to: String::from("broadcaster"),
+        }]);
+        while let Some(current_pulse) = pulses.pop_front() {
+            match current_pulse.is_high {
+                true => high_count += 1,
+                false => low_count += 1,
+            }
+            // dbg!(&current_pulse);
+            if let Some(receiver) = modules.get_mut(&current_pulse.to) {
+                for output in receiver.process_pulse(current_pulse) {
+                    pulses.push_back(output);
+                }
+            }
         }
     }
+    let count = high_count * low_count;
     println!("{}", count);
-}
-
-struct Pulse {
-    pub is_high: bool,
-    pub from: String,
-    pub to: String,
-}
-
-trait Module {
-    fn process_pulse(&mut self, pulse: Pulse) -> Vec<Pulse>;
-}
-
-struct FlipFlop {
-    name: String,
-    is_on: bool,
-    outputs: Vec<String>,
-}
-
-struct Conjunction {
-    name: String,
-    input_states: HashMap<String, bool>,
-    outputs: Vec<String>,
-}
-
-struct Broadcaster {
-    outputs: Vec<String>,
-}
-
-impl FlipFlop {
-    fn with_details(name: &str, outputs: Vec<String>) -> Self {
-        FlipFlop {
-            name: String::from(name),
-            is_on: false,
-            outputs,
-        }
-    }
-}
-
-impl Module for FlipFlop {
-    fn process_pulse(&mut self, pulse: Pulse) -> Vec<Pulse> {
-        if pulse.is_high {
-            return vec![];
-        }
-        self.is_on = !self.is_on;
-        self.outputs
-            .iter()
-            .map(|output| Pulse {
-                is_high: self.is_on,
-                from: self.name.clone(),
-                to: output.clone(),
-            })
-            .collect()
-    }
-}
-
-impl Conjunction {
-    fn with_details(name: &str, outputs: Vec<String>, inputs: Vec<String>) -> Self {
-        Conjunction {
-            name: String::from(name),
-            input_states: inputs.iter().map(|input| (input.clone(), false)).collect(),
-            outputs,
-        }
-    }
-}
-
-impl Module for Conjunction {
-    fn process_pulse(&mut self, pulse: Pulse) -> Vec<Pulse> {
-        self.input_states.insert(pulse.from, pulse.is_high);
-        let strength = !self.input_states.iter().all(|(_, high)| *high);
-        self.outputs
-            .iter()
-            .map(|output| Pulse {
-                is_high: strength,
-                from: self.name.clone(),
-                to: output.clone(),
-            })
-            .collect()
-    }
-}
-
-impl Broadcaster {
-    fn with_outputs(outputs: Vec<String>) -> Self {
-        Broadcaster { outputs }
-    }
-}
-
-impl Module for Broadcaster {
-    fn process_pulse(&mut self, pulse: Pulse) -> Vec<Pulse> {
-        self.outputs
-            .iter()
-            .map(|output| Pulse {
-                is_high: pulse.is_high,
-                from: String::from("broadcaster"),
-                to: output.clone(),
-            })
-            .collect()
-    }
 }
