@@ -41,7 +41,7 @@ pub fn run(input: &str) {
     println!("{}", sum);
 }
 
-// even more efficient than the 'efficient' one in first.rs
+// even more efficient than the 'efficient' one in old_first.rs
 fn ways_to_match_records(
     status_map: &[Status],
     records: &[usize],
